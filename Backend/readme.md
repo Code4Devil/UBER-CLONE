@@ -243,6 +243,136 @@ Authorization: Bearer <JWT_TOKEN>
 - The token will be blacklisted after logout
 - Clears the authentication cookie if present
 - Future requests with the same token will be rejected
+
+
+
+# Captain API Documentation
+
+## Register Captain
+Register a new captain in the system.
+
+### Endpoint
+```http
+POST /captains/register
+```
+
+### Request Body
+```json
+{
+  "fullname": {
+    "firstname": "string",
+    "lastname": "string"
+  },
+  "email": "string",
+  "password": "string",
+  "vehicle": {
+    "color": "string",
+    "plate": "string",
+    "capacity": "number",
+    "vehicleType": "string"
+  }
+}
+```
+
+### Validation Rules
+- **Fullname**: Required
+- **Email**: Required
+- **Password**: Required
+- **Vehicle Color**: Required
+- **Vehicle Plate**: Required
+- **Vehicle Capacity**: Required
+- **Vehicle Type**: Required
+
+### Example Request
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.driver@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "black",
+    "plate": "ABC123",
+    "capacity": 4,
+    "vehicleType": "sedan"
+  }
+}
+```
+
+### Success Response
+**Status Code**: `201 Created`
+
+```json
+{
+  "token": "JWT_TOKEN_STRING",
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "sedan"
+    }
+  }
+}
+```
+
+### Error Responses
+
+#### Validation Error
+**Status Code**: `400 Bad Request`
+```json
+{
+  "errors": [
+    {
+      "msg": "Full name is required",
+      "param": "fullname",
+      "location": "body"
+    }
+  ]
+}
+```
+
+#### Captain Already Exists
+**Status Code**: `400 Bad Request`
+```json
+{
+  "message": "Captain already exists"
+}
+```
+
+#### Missing Required Fields
+**Status Code**: `400 Bad Request`
+```json
+{
+  "error": "All fields are required"
+}
+```
+
+### Required Fields
+- `fullname` (Object)
+  - `firstname` (String, required)
+  - `lastname` (String)
+- `email` (String, required)
+- `password` (String, required)
+- `vehicle` (Object)
+  - `color` (String, required)
+  - `plate` (String, required)
+  - `capacity` (Number, required)
+  - `vehicleType` (String, required)
+
+### Notes
+- The password is hashed before storing in the database
+- A JWT token is generated and returned upon successful registration
+- All responses are in JSON format
+- Email must be unique in the system
+- All vehicle information is required
 ```
 
 </rewritten_file>
