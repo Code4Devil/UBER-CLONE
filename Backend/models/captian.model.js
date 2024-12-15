@@ -32,7 +32,8 @@ const captainSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true,
-        minlength:[6,'Password must be at least 6 characters long']
+        minlength:[6,'Password must be at least 6 characters long'],
+        select:false
     },
 
     socketId:{
@@ -88,13 +89,14 @@ captainSchema.methods.generateToken = async function(){
     return token;
 }
 
-captainSchema.methods.comparePassword = async function(password){
-    const isMatch = await bcrypt.compare(password,this.password);
-    return isMatch;
-}
 
 captainSchema.statics.hashPassword = async function(password){
     return await bcrypt.hash(password,10);
+}
+
+captainSchema.methods.comparePassword = async function(password) {
+    const isMatch = await bcrypt.compare( password, this.password);
+    return isMatch;
 }
 
 const captainModel = mongoose.model('captain',captainSchema);

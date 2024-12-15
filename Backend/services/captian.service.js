@@ -14,15 +14,13 @@ module.exports.register = async ({
         throw new Error('All fields are required');
     }
 
-    const hashedPassword = await captianModel.hashPassword(password);
-
     const captian = await captianModel.create({
         fullname:{
             firstname,
             lastname
         },
         email,
-        password:hashedPassword,
+        password,
         vehicle:{
             color,
             plate,

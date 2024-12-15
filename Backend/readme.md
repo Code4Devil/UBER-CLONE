@@ -373,6 +373,136 @@ POST /captains/register
 - All responses are in JSON format
 - Email must be unique in the system
 - All vehicle information is required
+
+## Login Captain
+Authenticate an existing captain and receive an access token.
+
+### Endpoint
+```http
+POST /captains/login
 ```
 
-</rewritten_file>
+### Request Body
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+### Example Request
+```json
+{
+  "email": "john.driver@example.com",
+  "password": "password123"
+}
+```
+
+### Success Response
+**Status Code**: `200 OK`
+```json
+{
+  "token": "JWT_TOKEN_STRING",
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "sedan"
+    },
+    "status": "inactive",
+    "socketId": null
+  }
+}
+```
+
+### Error Responses
+
+#### Invalid Credentials
+**Status Code**: `400 Bad Request`
+```json
+{
+  "message": "Invalid username or password"
+}
+```
+
+#### Captain Not Found
+**Status Code**: `400 Bad Request`
+```json
+{
+  "message": "Captain not found"
+}
+```
+
+## Get Captain Profile
+Get the authenticated captain's profile information.
+
+### Endpoint
+```http
+GET /captains/profile
+```
+
+### Headers
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Success Response
+**Status Code**: `200 OK`
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.driver@example.com",
+    "vehicle": {
+      "color": "black",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "sedan"
+    },
+    "status": "inactive",
+    "socketId": null
+  }
+}
+```
+
+## Logout Captain
+Logout the currently authenticated captain.
+
+### Endpoint
+```http
+GET /captains/logout
+```
+
+### Headers
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+### Success Response
+**Status Code**: `200 OK`
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+### Notes for Captain Routes
+- All endpoints except registration and login require authentication
+- Authentication is done via JWT tokens
+- Tokens are sent in the Authorization header as Bearer tokens
+- The captain's status is maintained (active/inactive)
+- Socket ID is used for real-time communication
+- Vehicle information is required and validated
+- Vehicle types are restricted to: "car", "motorcycle", "auto"
+- Vehicle capacity must be at least 1
+- First name must be at least 3 characters long
+- Password must be at least 6 characters long

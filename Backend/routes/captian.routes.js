@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const{body} = require('express-validator');
 const captianController = require('../controllers/captian.controller');
+const {authenticateCaptian} = require('../middlewares/auth.middleware');
 
 router.post('/register',[
     body('fullname').notEmpty().withMessage('Full name is required'),
@@ -15,5 +16,16 @@ router.post('/register',[
 ],
 captianController.registerCaptian
 )
+
+router.post('/login',[
+    body('email').notEmpty().withMessage('Email is required'),
+    body('password').notEmpty().withMessage('Password is required'),
+],
+    captianController.loginCaptian
+)
+
+router.get('/profile',authenticateCaptian,captianController.getCaptianProfile)
+
+router.get('/logout',authenticateCaptian,captianController.logoutCaptian)
 
 module.exports = router;
