@@ -1,25 +1,42 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { UserDataContext } from '../context/usercontext'
+import { useContext } from 'react'
+
 
 const Usersignup = () => {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [userdata, setUserData] = useState({})
+
+    const navigate = useNavigate();
+    const {user, setUser} = useContext(UserDataContext);
     
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        setUserData({
-            fullname: {
-                firstname:firstname,
-                lastname:lastname,
-            },
-            email:email,
-            password:password
-        })
-        console.log(userdata);
+       const newuser = {
+        fullname: {
+            firstname:firstname,
+            lastname:lastname,
+        },
+        email:email,
+        password:password
+       }
+
+       const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/register`, newuser);
+
+       if(response.status === 201){
+        const data = response.data;
+        localStorage.setItem("token", data.token);
+        setUser(data.user);
+        navigate("/home");
+       }
+
+        
 
         setFirstname("");
         setLastname("");
@@ -48,7 +65,7 @@ const Usersignup = () => {
                     <input value={email} onChange={(e) => setEmail(e.target.value)} className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-lg placeholder:text-sm' required  type="text" placeholder='email@example.com' />
                     <h3 className='text-base font-semibold mb-1'>Enter password</h3>
                     <input value={password} onChange={(e) => setPassword(e.target.value)} className='bg-[#eeeeee] mb-5 rounded px-4 py-2 border w-full text-lg placeholder:text-sm' required type="password" placeholder='password' />
-                    <button className='bg-[#111] rounded-md text-white w-full py-3' type='submit'>Login</button>
+                    <button className='bg-[#111] rounded-md text-white w-full py-3' type='submit'>Create Account</button>
 
                     <div className='flex justify-center items-center mt-2'>
                     <p className='text-center'>Already have an account? </p>  <Link to={"/login"} className='text-center text-blue-500'>Login</Link>
